@@ -5,7 +5,7 @@ Garnot, V. S. F., Landrieu, L., 2021. Panoptic segmentation of satellite image t
 attention networks. In Proceedings of the IEEE/CVF International Conference on Computer Vision (pp. 4872-4881).
 """
 
-from typing import List, Literal, Optional, Tuple
+from typing import List, Literal, Optional, Tuple, Union
 
 import torch
 from torch import Tensor, nn
@@ -22,41 +22,42 @@ from .parameters import (
 
 class UTILISE(nn.Module):
     def __init__(
-            self,
-            input_dim: int,
-            output_dim: Optional[int] = None,
-            encoder_widths: List[int] = [64, 64, 64, 128],
-            decoder_widths: List[int] = [32, 32, 64, 128],
-            upconv_type: Literal['transpose', 'bilinear'] = 'transpose',
-            encoder_norm: Optional[Literal['group', 'batch', 'instance']] = None,
-            decoder_norm: Optional[Literal['group', 'batch', 'instance']] = None,
-            skip_norm: Optional[Literal['group', 'batch', 'instance']] = None,
-            activation: str | Tuple[str, float] = 'relu',
-            str_conv_k: int = 4,
-            str_conv_s: int = 2,
-            str_conv_p: int = 1,
-            str_conv_k_up: Optional[int] = 2,
-            str_conv_p_up: Optional[int] = 0,
-            padding_mode: str = 'reflect',
-            skip_attention: bool = False,
-            positional_encoding: bool = True,
-            n_temporal_encoding_layers: int = 1,
-            agg_mode: Optional[Literal['att_group', 'att_mean']] = 'att_group',
-            n_head: int = 4,
-            d_k: int = 4,
-            bias_qk: bool = False,
-            attn_dropout: float = 0.1,
-            dropout: float = 0.1,
-            n_groups: int = 4,
-            dim_per_group: int = -1,
-            group_norm_eps: float = 1e-05,
-            ltae_norm: str = 'group',
-            ltae_activation: str | Tuple[str, float] = 'relu',
-            norm_first: bool = True,
-            pad_value: Optional[float] = 0,
-            output_activation: str | Tuple[str, float] | bool | None = 'sigmoid',
-            return_maps: bool = False
-    ):
+                self,
+                input_dim: int,
+                output_dim: Optional[int] = None,
+                encoder_widths: List[int] = [64, 64, 64, 128],
+                decoder_widths: List[int] = [32, 32, 64, 128],
+                upconv_type: Literal['transpose', 'bilinear'] = 'transpose',
+                encoder_norm: Optional[Literal['group', 'batch', 'instance']] = None,
+                decoder_norm: Optional[Literal['group', 'batch', 'instance']] = None,
+                skip_norm: Optional[Literal['group', 'batch', 'instance']] = None,
+                activation: Union[str, Tuple[str, float]] = 'relu',
+                str_conv_k: int = 4,
+                str_conv_s: int = 2,
+                str_conv_p: int = 1,
+                str_conv_k_up: Optional[int] = 2,
+                str_conv_p_up: Optional[int] = 0,
+                padding_mode: str = 'reflect',
+                skip_attention: bool = False,
+                positional_encoding: bool = True,
+                n_temporal_encoding_layers: int = 1,
+                agg_mode: Optional[Literal['att_group', 'att_mean']] = 'att_group',
+                n_head: int = 4,
+                d_k: int = 4,
+                bias_qk: bool = False,
+                attn_dropout: float = 0.1,
+                dropout: float = 0.1,
+                n_groups: int = 4,
+                dim_per_group: int = -1,
+                group_norm_eps: float = 1e-05,
+                ltae_norm: str = 'group',
+                ltae_activation: Union[str, Tuple[str, float]] = 'relu',
+                norm_first: bool = True,
+                pad_value: Optional[float] = 0,
+                output_activation: Union[str, Tuple[str, float], bool, None] = 'sigmoid',
+                return_maps: bool = False
+        ):
+
         """
         U-TILISE (U-Net Temporal Imputation Lightweight Image Sequence Encoder) architecture for spatio-temporal
         sequence modeling of satellite image time series.
@@ -276,10 +277,9 @@ class UTILISE(nn.Module):
         )
 
     def forward(
-            self, x: Tensor, batch_positions: Optional[Tensor] = None, return_att: bool = False
-    ) -> Tensor | Tuple[Tensor, Tensor] | Tuple[Tensor, Optional[List[Tensor]]] | Tuple[
-        Tensor, Optional[Tensor], Optional[List[Tensor]]
-    ]:
+                self, x: Tensor, batch_positions: Optional[Tensor] = None, return_att: bool = False
+        ) -> Union[Tensor, Tuple[Tensor, Tensor], Tuple[Tensor, Optional[List[Tensor]]], Tuple[Tensor, Optional[Tensor], Optional[List[Tensor]]]]:
+
         pad_mask = (
             (x == self.pad_value).all(dim=-1).all(dim=-1).all(dim=-1)
         )  # BxT pad mask
@@ -375,19 +375,20 @@ class TemporallySharedBlock(nn.Module):
 
 class ConvLayer(nn.Module):
     def __init__(
-            self,
-            n_kernels: List[int],
-            norm: NormType = NormType.BATCH,
-            activation: ActivationType | Tuple[ActivationType, float] = ActivationType.RELU,
-            k: int = 3,
-            s: int = 1,
-            p: int = 1,
-            num_groups: int = 4,
-            dim_per_group: int = -1,
-            group_norm_eps: float = 1e-05,
-            padding_mode: str = 'reflect',
-            activation_last_layer: ActivationType | Tuple[ActivationType, float] | bool | None = True
-    ):
+                self,
+                n_kernels: List[int],
+                norm: NormType = NormType.BATCH,
+                activation: Union[ActivationType, Tuple[ActivationType, float]] = ActivationType.RELU,
+                k: int = 3,
+                s: int = 1,
+                p: int = 1,
+                num_groups: int = 4,
+                dim_per_group: int = -1,
+                group_norm_eps: float = 1e-05,
+                padding_mode: str = 'reflect',
+                activation_last_layer: Union[ActivationType, Tuple[ActivationType, float], bool, None] = True
+        ):
+
         super().__init__()
         layers = []
         if norm == NormType.BATCH:
@@ -403,7 +404,8 @@ class ConvLayer(nn.Module):
         else:
             nl = None
 
-        activation_last: Optional[ActivationType | Tuple[ActivationType, float]] = None
+        activation_last: Optional[Union[ActivationType, Tuple[ActivationType, float]]] = None
+
 
         if activation_last_layer is True:
             activation_last = activation
@@ -444,7 +446,7 @@ class UpConvLayer(TemporallySharedBlock):
             pad_value: Optional[float] = None,
             norm: NormType = NormType.BATCH,
             upconv_type: UpConvType = UpConvType.TRANSPOSE,
-            activation: ActivationType | Tuple[ActivationType, float] = ActivationType.RELU,
+            activation: Union[ActivationType, Tuple[ActivationType, float]] = ActivationType.RELU,
             k: int = 4,
             s: int = 2,
             p: int = 1,
@@ -495,19 +497,20 @@ class UpConvLayer(TemporallySharedBlock):
 
 class ConvBlock(TemporallySharedBlock):
     def __init__(
-            self,
-            n_kernels: List[int],
-            k: int = 3,
-            p: int = 1,
-            pad_value: Optional[float] = None,
-            norm: NormType = NormType.BATCH,
-            activation: ActivationType | Tuple[ActivationType, float] = ActivationType.RELU,
-            activation_last_layer: ActivationType | Tuple[ActivationType, float] | bool | None = True,
-            padding_mode: str = 'reflect',
-            num_groups: int = 4,
-            dim_per_group: int = -1,
-            group_norm_eps: float = 1e-05
-    ):
+                self,
+                n_kernels: List[int],
+                k: int = 3,
+                p: int = 1,
+                pad_value: Optional[float] = None,
+                norm: NormType = NormType.BATCH,
+                activation: Union[ActivationType, Tuple[ActivationType, float]] = ActivationType.RELU,
+                activation_last_layer: Union[ActivationType, Tuple[ActivationType, float], bool, None] = True,
+                padding_mode: str = 'reflect',
+                num_groups: int = 4,
+                dim_per_group: int = -1,
+                group_norm_eps: float = 1e-05
+        ):
+
         super().__init__(pad_value=pad_value)
         self.conv = ConvLayer(
             n_kernels=n_kernels,
@@ -539,7 +542,7 @@ class DownConvBlock(TemporallySharedBlock):
             num_groups: int = 4,
             dim_per_group: int = -1,
             group_norm_eps: float = 1e-05,
-            activation: ActivationType | Tuple[ActivationType, float] = ActivationType.RELU,
+            activation: Union[ActivationType, Tuple[ActivationType, float]] = ActivationType.RELU,
             padding_mode: str = 'reflect'
     ):
         super().__init__(pad_value=pad_value)
@@ -596,7 +599,7 @@ class UpConvBlock(TemporallySharedBlock):
             num_groups: int = 4,
             dim_per_group: int = -1,
             group_norm_eps: float = 1e-05,
-            activation: ActivationType | Tuple[ActivationType, float] = ActivationType.RELU,
+            activation: Union[ActivationType, Tuple[ActivationType, float]] = ActivationType.RELU,
             padding_mode: str = 'reflect',
             pad_value: Optional[float] = None
     ):

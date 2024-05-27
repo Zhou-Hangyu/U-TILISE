@@ -8,7 +8,7 @@ from copy import deepcopy
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -333,7 +333,7 @@ def write_model_structure_to_file(
     sys.stdout = original
 
 
-def without_keys(d: Dict | DictConfig, ignore_keys: List[str]) -> Dict | DictConfig:
+def without_keys(d: Union[Dict, DictConfig], ignore_keys: List[str]) -> Union[Dict, DictConfig]:
     """
     Returns a copy of the dictionary `d` without the keys listed in `ignore_keys`.
     """

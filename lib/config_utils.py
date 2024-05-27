@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from typing import Optional
+from typing import Union, Optional
 
 import prodict
 import yaml
@@ -27,7 +27,7 @@ def resolve_tuple(*args):
 OmegaConf.register_new_resolver('tuple', resolve_tuple)
 
 
-def print_config(config: DictConfig | prodict.Prodict | str, logger: Optional[logging.Logger] = None) -> None:
+def print_config(config: Union[DictConfig, prodict.Prodict, str], logger: Optional[logging.Logger] = None) -> None:
     """
     Prints a yaml configuration file to the console.
 
@@ -36,7 +36,7 @@ def print_config(config: DictConfig | prodict.Prodict | str, logger: Optional[lo
         logger:      logger instance.
     """
 
-    if isinstance(config, Prodict):
+    if isinstance(config, prodict.Prodict):
         config = config.to_dict(is_recursive=True)
     elif isinstance(config, str):
         config = read_config(config)
@@ -47,7 +47,6 @@ def print_config(config: DictConfig | prodict.Prodict | str, logger: Optional[lo
         logger.info(yaml.dump(config, indent=4, default_flow_style=False, sort_keys=False, allow_unicode=True))
     else:
         yaml.dump(config, sys.stdout, indent=4, default_flow_style=False, sort_keys=False, allow_unicode=True)
-
 
 def read_config(file: str) -> DictConfig:
     """
@@ -71,8 +70,7 @@ def read_config(file: str) -> DictConfig:
 
     return OmegaConf.create(config)
 
-
-def write_config(data: DictConfig | prodict.Prodict, outfile: str) -> None:
+def write_config(data: Union[DictConfig, prodict.Prodict], outfile: str) -> None:
     """
     Writes the dictionary data to a yaml file.
 
@@ -82,7 +80,7 @@ def write_config(data: DictConfig | prodict.Prodict, outfile: str) -> None:
     """
 
     with open(outfile, "w", encoding="utf-8") as f:
-        if isinstance(data, Prodict):
+        if isinstance(data, prodict.Prodict):
             yaml.dump(data.to_dict(is_recursive=True), f, indent=4, default_flow_style=None, sort_keys=False,
                       allow_unicode=True)
         elif isinstance(data, DictConfig):

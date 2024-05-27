@@ -1,12 +1,11 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 from torch import nn
 
 from .parameters import ActivationType
 
 
-def str2ActivationType(activation: str | Tuple[str, float]) -> ActivationType | Tuple[ActivationType, float]:
-
+def str2ActivationType(activation: Union[str, Tuple[str, float]]) -> Union[ActivationType, Tuple[ActivationType, float]]:
     if isinstance(activation, str):
         activation = activation.replace("(", '').replace(")", '').split(',')
 
@@ -15,7 +14,7 @@ def str2ActivationType(activation: str | Tuple[str, float]) -> ActivationType | 
     return ActivationType(activation[0])
 
 
-def get_activation(activation: ActivationType | Tuple[ActivationType, float] | str | Tuple[str, float]):
+def get_activation(activation: Union[ActivationType, Tuple[ActivationType, float], str, Tuple[str, float]]):
     """
     activation:  str or tuple (str, float)
                  Examples: 'relu', ('lrelu', 0.1), 'prelu', 'gelu', 'mish'

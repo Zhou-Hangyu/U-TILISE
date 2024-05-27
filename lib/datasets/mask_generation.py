@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Tuple
+from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -94,7 +94,7 @@ def masks_init_filling(
 
 
 def overlay_seq_with_clouds(
-        images: Tensor, cloud_masks: Tensor, t_masked: np.ndarray | None = None, fill_value: int = 0,
+        images: Tensor, cloud_masks: Tensor, t_masked: Union[np.ndarray, None] = None, fill_value: int = 0,
         dilate_cloud_masks: Optional[bool] = False
 ) -> Tuple[Tensor, Tensor]:
     """

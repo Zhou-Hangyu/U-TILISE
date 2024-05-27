@@ -5,7 +5,7 @@ https://pytorch.org/docs/stable/_modules/torch/nn/modules/transformer.html#Trans
 """
 
 import copy
-from typing import List, Literal, Optional, Tuple
+from typing import List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -26,7 +26,7 @@ class LTAEtransformer(nn.Module):
         positional_encoding: bool = True,
         T: int = 1000,
         mlp: List[int] = [128, 128],
-        activation: str | Tuple[str, float] = 'relu',
+        activation: Union[str, Tuple[str, float]] = 'relu',
         norm: Literal['group', 'layer'] = 'group',
         num_groups: int = 4,
         dim_per_group: int = -1,
@@ -156,7 +156,7 @@ class LTAEtransformer(nn.Module):
 
     def forward(
             self, x: Tensor, batch_positions: Optional[Tensor] = None, pad_mask: Optional[Tensor] = None
-    ) -> Tensor | Tuple[Tensor, Tensor]:
+    ) -> Union[Tensor, Tuple[Tensor, Tensor]]:
         sz_b, seq_len, c, h, w = x.shape
         if pad_mask is not None:
             pad_mask = (
@@ -226,7 +226,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(
             self, v: Tensor, pad_mask: Optional[Tensor] = None, return_comp: bool = False
-    ) -> Tuple[Tensor, Tensor] | Tuple[Tensor, Tensor, Optional[Tensor]]:
+    ) -> Union[Tuple[Tensor, Tensor], Tuple[Tensor, Tensor, Optional[Tensor]]]:
         d_k, d_in, n_head = self.d_k, self.d_in, self.n_head
         sz_b, seq_len, _ = v.size()
 
@@ -279,7 +279,7 @@ class ScaledDotProductAttention(nn.Module):
 
     def forward(
             self, q: Tensor, k: Tensor, v: Tensor, pad_mask: Optional[Tensor] = None, return_comp: bool = False
-    ) -> Tuple[Tensor, Tensor] | Tuple[Tensor, Tensor, Optional[Tensor]]:
+    ) -> Union[Tuple[Tensor, Tensor], Tuple[Tensor, Tensor, Optional[Tensor]]]:
         attn = torch.matmul(q, k.transpose(1, 2))
         attn = attn / self.temperature
 

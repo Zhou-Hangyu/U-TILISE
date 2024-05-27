@@ -1,12 +1,14 @@
 import torch
 from torch import Tensor, nn
+from typing import List, Literal, Optional, Tuple, Union
+
 
 
 class PositionalEncoder(nn.Module):
     """
     Modified from https://github.com/VSainteuf/utae-paps/blob/main/src/backbones/positional_encoding.py
     """
-    def __init__(self, d: int, T: int = 1000, repeat: int | None = None, offset: int = 0):
+    def __init__(self, d: int, T: int = 1000, repeat: Optional[int] = None, offset: int = 0):
         super().__init__()
         self.d = d
         self.T = T

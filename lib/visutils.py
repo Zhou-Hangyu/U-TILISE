@@ -17,7 +17,7 @@ COLORMAPS = {
 }
 
 
-def apply_brightness_factor(data: np.ndarray | Tensor, factor: float = 3.0) -> np.ndarray | Tensor:
+def apply_brightness_factor(data: Union[np.ndarray, Tensor], factor: float = 3.0) -> Union[np.ndarray, Tensor]:
 
     data = data * factor
 
@@ -30,12 +30,12 @@ def apply_brightness_factor(data: np.ndarray | Tensor, factor: float = 3.0) -> n
 
 
 def gallery(
-        data: np.ndarray | Tensor,
+        data: Union[np.ndarray, Tensor],
         ncols: int = 10,
         border_thickness: int = 2,
         border_color: Literal['black', 'white'] = 'black',
         brightness_factor: float = 3.0
-) -> np.ndarray | Tensor:
+) -> Union[np.ndarray, Tensor]:
 
     if border_color not in ['black', 'white']:
         raise ValueError("Choose either 'white' or 'black' as border color.\n")
@@ -85,18 +85,18 @@ def gallery(
 
 
 def sequence2gallery(
-        data: np.ndarray | Tensor,
+        data: Union[np.ndarray, Tensor],
         variable: Literal['rgb', 'binary_mask', 'att', 'cloud_prob', 's1'] = 'rgb',
         ncols: int = 10,
         border_thickness: int = 2,
         border_color: Literal['black', 'white'] = 'black',
-        indices_rgb: List[int] | List[float] | Tensor = [0, 1, 2],
+        indices_rgb: Union[List[int], List[float], Tensor] = [0, 1, 2],
         brightness_factor: float = 1,
         dpi: int = 300,
         vmin: Optional[float] = None,
         vmax: Optional[float] = None,
         return_grid: bool = False
-) -> Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, np.ndarray | Tensor]]:
+) -> Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, Union[np.ndarray, Tensor]]]:
     """
     Plots an image time series as a grid.
 

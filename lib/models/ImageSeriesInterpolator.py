@@ -1,5 +1,5 @@
 import math
-from typing import Literal, Optional, Tuple
+from typing import Literal, Optional, Tuple, Union
 
 import matplotlib
 import numpy as np
@@ -36,7 +36,7 @@ class ImageSeriesInterpolator(nn.Module):
             cloud_mask: Tensor,
             days: Optional[Tensor] = None,
             return_vis_map: Optional[bool] = False
-    ) -> Tensor | Tuple[Tensor, Optional[np.ndarray | Tuple[np.ndarray, np.ndarray]]]:
+    ) -> Union[Tensor, Tuple[Tensor, Optional[Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]]]]:
         """
         Args:
             images:          torch.Tensor, B x T x C x H x W, image time series to be imputed.
@@ -56,7 +56,7 @@ class ImageSeriesInterpolator(nn.Module):
         if self.mode in ['linear_interpolation', 'closest']:
             assert days is not None, 'Please provide the temporal sampling information.'
 
-        vis_maps: Optional[np.ndarray | Tuple[np.ndarray, np.ndarray]] = None
+        vis_maps: Optional[Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]] = None
 
         # Convert input data to numpy arrays to enable computation speed-up via numba
         images = images.numpy()

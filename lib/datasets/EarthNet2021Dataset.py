@@ -3,7 +3,7 @@ import math
 import os
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import h5py
 import numpy as np
@@ -144,15 +144,15 @@ class EarthNet2021Dataset(torch.utils.data.Dataset):
 
     def __init__(self,
                  root: str,
-                 hdf5_file: str | Path | None = None,
+                 hdf5_file: Union[str, Path, None] = None,
                  preprocessed: bool = False,
                  split: str = 'train',
                  mode: Optional[str] = 'train',
                  channels: str = 'bgr-nir',
-                 filter_settings: Optional[Dict | DictConfig] = None,
-                 crop_settings: Optional[Dict | DictConfig] = None,
+                 filter_settings: Optional[Union[Dict, DictConfig]] = None,
+                 crop_settings: Optional[Union[Dict, DictConfig]] = None,
                  pe_strategy: str = 'day-of-year',
-                 mask_kwargs: Optional[Dict | DictConfig] = None,
+                 mask_kwargs: Optional[Union[Dict, DictConfig]] = None,
                  render_occluded_above_p: Optional[float] = None,
                  return_cloud_prob: bool = False,
                  return_class_map: bool = False,
@@ -527,12 +527,12 @@ class EarthNet2021Dataset(torch.utils.data.Dataset):
         return out
 
     def _generate_masks(
-            self,
-            sample: h5py._hl.group.Group,
-            frames_input: Tensor,
-            cloud_mask_input: Tensor,
-            t_masked: Dict[str, np.ndarray] | None = None
-    ) -> Tuple[Dict[str, np.ndarray], Tensor, Tensor]:
+                self,
+                sample: h5py._hl.group.Group,
+                frames_input: Tensor,
+                cloud_mask_input: Tensor,
+                t_masked: Optional[Union[Dict[str, np.ndarray], None]] = None
+        ) -> Tuple[Dict[str, np.ndarray], Tensor, Tensor]:
         """
         Uses a sequence of masks (randomly generated or actual cloud mask sequence) to synthetically generate data gaps
         in the given satellite image time series.

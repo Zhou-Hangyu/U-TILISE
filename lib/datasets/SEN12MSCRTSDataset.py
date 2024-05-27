@@ -2,7 +2,7 @@ import datetime as dt
 import os
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import h5py
 import numpy as np
@@ -139,15 +139,15 @@ class SEN12MSCRTSDataset(EarthNet2021Dataset):
 
     def __init__(self,
                  root: str,
-                 hdf5_file: str | Path | None = None,
+                 hdf5_file: Union[str, Path, None] = None,
                  preprocessed: bool = False,
                  split: str = 'train',
                  channels: str = 'all',
                  include_S1: bool = False,
-                 filter_settings: Optional[Dict | DictConfig] = None,
-                 crop_settings: Optional[Dict | DictConfig] = None,
+                 filter_settings: Optional[Union[Dict, DictConfig]] = None,
+                 crop_settings: Optional[Union[Dict, DictConfig]] = None,
                  pe_strategy: str = 'day-of-year',
-                 mask_kwargs: Optional[Dict | DictConfig] = None,
+                 mask_kwargs: Optional[Union[Dict, DictConfig]] = None,
                  render_occluded_above_p: Optional[float] = None,
                  return_cloud_prob: bool = False,
                  return_cloud_mask: bool = True,

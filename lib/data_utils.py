@@ -175,8 +175,7 @@ def get_dataset(config: DictConfig, phase: str, logger: Optional[logging.Logger]
 
     return dset
 
-
-def compute_false_color(x: Tensor, index_rgb: Tensor | List[int | float], index_nir: int | float) -> Tensor:
+def compute_false_color(x: Tensor, index_rgb: Union[Tensor, List[Union[int, float]]], index_nir: Union[int, float]) -> Tensor:
     """
     Returns the false color composite (NIR, R, G) for every time step of the input sequence or
     for the single input image.

@@ -2,7 +2,7 @@ import logging
 import logging.config
 import os
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
 import prodict
@@ -472,7 +472,7 @@ class Trainer:
 
     def inference_one_batch(
             self, batch: Dict[str, Any], phase: str
-    ) -> Tuple[Dict[str, float], Dict[str, float], Tensor] | Tuple[Dict[str, float], Dict[str, float]]:
+    ) -> Union[Tuple[Dict[str, float], Dict[str, float], Tensor], Tuple[Dict[str, float], Dict[str, float]]]:
         assert phase in ['train', 'val', 'test']
 
         batch = to_device(batch, self.device)

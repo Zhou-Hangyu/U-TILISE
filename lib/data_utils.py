@@ -149,6 +149,10 @@ def get_dataset(config: DictConfig, phase: str, logger: Optional[logging.Logger]
     assert config['misc']['run_mode'] in ['train', 'val', 'test']
     assert phase in ['train', 'val', 'train+val', 'test']
 
+    print(f"config.data.dataset: {config.data.dataset}")
+    print(f"DATASETS: {DATASETS}")
+    
+
     if config.data.dataset not in DATASETS:
         if logger:
             logger.error(f'Unknown dataset: {config.data.dataset}\n')

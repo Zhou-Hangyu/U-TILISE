@@ -1,4 +1,5 @@
 data
+results
 experiments
 wandb
 .ipynb_checkpoints

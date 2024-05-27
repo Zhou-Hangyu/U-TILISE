@@ -6,7 +6,7 @@ import torch
 from enum import Enum
 from matplotlib import pyplot as plt
 from torch import Tensor, nn
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 from lib import config_utils, data_utils, utils, visutils
 from lib.models import MODELS
@@ -29,10 +29,10 @@ class Mode(Enum):
 class Imputation:
     def __init__(
             self,
-            config_file_train: str | None,
+            config_file_train: Optional[str],
             method: Literal['utilise', 'trivial'] = 'utilise',
-            mode: Literal['last', 'next', 'closest', 'linear_interpolation'] | None = None,
-            checkpoint: str | None = None
+            mode: Optional[Literal['last', 'next', 'closest', 'linear_interpolation']] = None,
+            checkpoint: Optional[str] = None
     ):
         
         self.method = Method(method)
@@ -76,12 +76,12 @@ class Imputation:
             self.model = MODELS['ImageSeriesInterpolator'](mode=self.mode.value)
 
     def impute_sample(
-            self,
-            batch: Dict[str, Any],
-            t_start: Optional[int] = None,
-            t_end: Optional[int] = None,
-            return_att: Optional[bool] = False
-    ) -> Tuple[Dict[str, Any], Tensor, Tensor] | Tuple[Dict[str, Any], Tensor]:
+                self,
+                batch: Dict[str, Any],
+                t_start: Optional[int] = None,
+                t_end: Optional[int] = None,
+                return_att: Optional[bool] = False
+        ) -> Union[Tuple[Dict[str, Any], Tensor, Tensor], Tuple[Dict[str, Any], Tensor]]:
 
         if t_start is not None and t_end is not None:
             # Choose a subsequence
@@ -123,7 +123,7 @@ class Imputation:
 
 def impute_sequence(
         model, batch: Dict[str, Any], temporal_window: int, return_att: bool = False
-) -> Tensor | Tuple[Tensor, Tensor]:
+) -> Union[Tensor, Tuple[Tensor, Tensor]]:
     """
     Sliding-window imputation of satellite image time series.
 
@@ -292,7 +292,7 @@ def visualize_att_for_one_head_across_time(
         head: int,
         batch: int = 0,
         upsample_att: bool = True,
-        indices_rgb: List[int] | List[float] | Tensor | None = None,
+        indices_rgb: Optional[Union[List[int], List[float], Tensor]] = None,
         brightness_factor: float = 1,
         fontsize: int = 10,
         scale_individually: bool = False
@@ -359,7 +359,7 @@ def visualize_att_for_target_t_across_heads(
         t_target: int,
         batch: int = 0,
         upsample_att: bool = True,
-        indices_rgb: List[int] | List[float] | Tensor | None = None,
+        indices_rgb: Optional[Union[List[int], List[float], Tensor]] = None,
         brightness_factor: float = 1,
         figsize: Tuple[float, float] = (10, 7),
         dpi: int = 200,
